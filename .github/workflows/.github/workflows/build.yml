@@ -1,0 +1,21 @@
+name: Build Padavan
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Dependencies & Build
+        run: |
+          sudo apt update
+          sudo apt install -y git wget make gcc g++ unzip libncurses5-dev zlib1g-dev gawk gettext build-essential libssl-dev python3 fakeroot
+          git clone --depth=1 https://github.com/hanwckf/padavan-ng.git
+          cd padavan-ng/toolchain-mipsel
+          ./dl_toolchain.sh
+          cd ../trunk
+          cp ../../configs/RT-N56U.config configs/templates/.config
+          fakeroot ./build_firmware_modify RT-N56U
